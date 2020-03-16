@@ -3,6 +3,7 @@ import React, {useState, useEffect} from 'react';
 function App() {
   const [text, setText] = useState('')
   const [timeRemaining, setTimeRemaining] = useState(5)
+  const [didGameStart, setDidGameStart] = useState(false)
 
   function handleChange(e) {
     const {value} = e.target
@@ -15,12 +16,14 @@ function App() {
   }
 
   useEffect(()=>{
-    if(timeRemaining >0){
+    if(didGameStart && timeRemaining >0){
       setTimeout(()=>{
         setTimeRemaining(time => time -1)
       },1000)
+    } else if(timeRemaining === 0) {
+      didGameStart(false)
     }
-  }, [timeRemaining])
+  }, [timeRemaining, didGameStart])
 
   return (
     <div className="App">
@@ -31,7 +34,7 @@ function App() {
         value={text}
       />
       <h4>Time remaining: {timeRemaining}</h4>
-      <button onClick={()=> wordCount(text)}>Start</button>
+      <button onClick={()=> setDidGameStart(true)}>Start</button>
       <h1>word count</h1>
     </div>
   );
