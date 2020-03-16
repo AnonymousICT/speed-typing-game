@@ -1,18 +1,33 @@
 import React, {useState, useEffect} from 'react';
 
 function App() {
+  const STARTING_TIME = 5
+
   const [text, setText] = useState('')
-  const [timeRemaining, setTimeRemaining] = useState(5)
+  const [timeRemaining, setTimeRemaining] = useState(STARTING_TIME)
   const [didGameStart, setDidGameStart] = useState(false)
+  const [wordCount, setWordCount] = useState(0)
 
   function handleChange(e) {
     const {value} = e.target
     setText(value)
   }
 
-  function wordCount(text){
+  function calculateWordCount(text){
     const wordsArr = text.trim().split(" ")
     return wordsArr.filter(word => word !== "").length
+  }
+
+  function startGame() {
+    setDidGameStart(true)
+    setTimeRemaining(STARTING_TIME)
+    setText("")
+  }
+
+  function endGame(){
+    setDidGameStart(false)
+    setWordCount(calculateWordCount(text)) 
+
   }
 
   useEffect(()=>{
@@ -21,7 +36,7 @@ function App() {
         setTimeRemaining(time => time -1)
       },1000)
     } else if(timeRemaining === 0) {
-      didGameStart(false)
+      endGame()
     }
   }, [timeRemaining, didGameStart])
 
@@ -32,10 +47,14 @@ function App() {
       <textarea 
         onChange={handleChange}
         value={text}
+        disabled={!didGameStart}
       />
       <h4>Time remaining: {timeRemaining}</h4>
-      <button onClick={()=> setDidGameStart(true)}>Start</button>
-      <h1>word count</h1>
+      <button 
+        onClick={startGame}
+        disabled={didGameStart}
+      >Start</button>
+      <h1>Word count: {wordCount}</h1>
     </div>
   );
 }
